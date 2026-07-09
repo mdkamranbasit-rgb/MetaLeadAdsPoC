@@ -12,7 +12,7 @@ app.get("/", (req, res) => {
   res.send("Meta Lead Ads Backend is running 🚀");
 });
 
-let latestLead = null;
+let leads = [];
 
 // ==========================
 // Webhook Verification
@@ -46,7 +46,10 @@ app.post("/webhook", (req, res) => {
   console.log("\n🔥🔥🔥 WEBHOOK POST RECEIVED 🔥🔥🔥");
   console.log(JSON.stringify(req.body, null, 2));
 
-  latestLead = req.body;
+  leads.unshift({
+  id: Date.now(),
+  ...req.body,
+});
 
   res.sendStatus(200);
 });
@@ -55,7 +58,10 @@ app.post("/webhook", (req, res) => {
 // Simulate Lead (Postman)
 // ==========================
 app.post("/simulate-lead", (req, res) => {
-  latestLead = req.body;
+  leads.unshift({
+  id: Date.now(),
+  ...req.body,
+});
 
   console.log("\n✅ Simulated Lead Received");
   console.log(latestLead);
@@ -69,8 +75,8 @@ app.post("/simulate-lead", (req, res) => {
 // ==========================
 // Get Latest Lead
 // ==========================
-app.get("/latest-lead", (req, res) => {
-  res.json(latestLead);
+app.get("/leads", (req, res) => {
+  res.json(leads);
 });
 
 const PORT = process.env.PORT || 3000;
